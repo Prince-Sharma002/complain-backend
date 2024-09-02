@@ -9,7 +9,7 @@ import bodyParser from 'body-parser';
 const app = express();
 
 var corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: 'https://complain-frontend.vercel.app/',
   credentials : true,
   method : "GET , POST, PUT, DELETE , PATCH , HEAD",
 
