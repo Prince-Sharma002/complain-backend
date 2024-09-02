@@ -8,12 +8,12 @@ import bodyParser from 'body-parser';
 
 const app = express();
 
-var corsOptions = {
-  origin: 'https://complain-frontend.vercel.app/',
-  credentials : true,
-  method : "GET , POST, PUT, DELETE , PATCH , HEAD",
+const corsOptions = {
+  origin: 'https://complain-frontend.vercel.app',
+  credentials: true,
+  methods: "GET,POST,PUT,DELETE,PATCH,HEAD",
+};
 
-}
 
   // Increase the request payload limit
 app.use(bodyParser.json({ limit: '10mb' })); // Set the limit as needed
