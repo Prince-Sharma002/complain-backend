@@ -51,7 +51,7 @@ app.post('/complain', async (req, res) => {
   try{
     console.log("data is  " , req.body)
     const {name , desciption , address , image , phone , email , } = req.body;
-    await userComplain.create({name , desciption , address , image , phone , email , progress : 0 , pid : "qwertyuiop" });
+    await userComplain.create({name , desciption , address , image , phone , email , progress : 1 , pid : "qwertyuiop" });
     return res.status(200).json({ msg : "data sent successfully" });
   }
   catch(err){
