@@ -24,6 +24,16 @@ const complainSchema = new mongoose.Schema({
   email : {
     type : String,
     required : true,
+  },
+  progress : {
+    type : Number,
+    default : 0,
+    min : 0,
+    max : 3,
+  },
+  pid : {
+    type : String,
+    default : "asdfghjkl"
   }
 })
 
