@@ -8,8 +8,9 @@ import bodyParser from 'body-parser';
 
 const app = express();
 
+//  https://complain-frontend.vercel.app
 const corsOptions = {
-  origin: 'https://complain-frontend.vercel.app',
+  origin: 'http://localhost:3000',
   credentials: true,
   methods: "GET,POST,PUT,DELETE,PATCH,HEAD",
 };
@@ -116,6 +117,31 @@ app.delete( '/getdata/delete/:id' , async(req,res)=> {
     console.log(err)
   }
 })
+
+
+
+// update progress
+app.post('/updateprogress', async (req, res) => {
+  try {
+      const { _id, progress } = req.body;
+      
+      // Use async/await with Mongoose
+      const updatedComplain = await userComplain.findByIdAndUpdate(
+          _id,
+          { progress },
+          { new: true }
+      );
+      
+      if (!updatedComplain) {
+          return res.status(404).json({ message: 'Complaint not found' });
+      }
+
+      res.status(200).json(updatedComplain);
+  } catch (error) {
+      console.error("Error updating progress:", error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 
 
