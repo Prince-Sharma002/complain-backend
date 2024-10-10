@@ -10,7 +10,7 @@ const app = express();
 
 //  https://complain-frontend.vercel.app
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: 'https://complain-frontend.vercel.app',
   credentials: true,
   methods: "GET,POST,PUT,DELETE,PATCH,HEAD",
 };
