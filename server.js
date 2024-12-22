@@ -69,14 +69,14 @@ import nodemailer from 'nodemailer';
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: "complainbox757@gmail", // Your email
-    pass: "qgph kwtr gqjh ddwr"  // Your email password
+    user: "complainbox757@gmail.com", // Your email
+    pass: "daef peiz ajwd kcjt"  // Your email password
   }
 });
 
 export const sendEmail = (to, subject, text) => {
   const mailOptions = {
-    from: "complainbox757@gmail",
+    from: "complainbox757@gmail.com",
     to ,
     subject ,
     text 
