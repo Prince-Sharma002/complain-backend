@@ -10,7 +10,7 @@ const app = express();
 
 //  https://complain-frontend.vercel.app
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: 'https://complain-frontend.vercel.app',
   credentials: true,
   methods: "GET,POST,PUT,DELETE,PATCH,HEAD",
 };
@@ -70,7 +70,7 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: "prince12845sharma@gmail.com", // Your email
-    pass: "uvuv ssbr epzr xofs"  // Your email password
+    pass: "nhaj ckoj zvep npgz"  // Your email password
   }
 });
 
