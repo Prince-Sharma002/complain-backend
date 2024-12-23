@@ -8,12 +8,25 @@ import bodyParser from 'body-parser';
 
 const app = express();
 
-//  https://complain-frontend.vercel.app
+const allowedOrigins = [
+  'https://complain-frontend.vercel.app',
+  'https://geo-mesh-front.vercel.app/admin', // Add more origins here
+  'http://localhost:3000' // Localhost for testing
+];
+
 const corsOptions = {
-  origin: 'https://complain-frontend.vercel.app',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g., mobile apps or Postman)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: "GET,POST,PUT,DELETE,PATCH,HEAD",
 };
+
 
 
   // Increase the request payload limit
