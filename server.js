@@ -93,8 +93,20 @@ export const sendEmail = (to, subject, text) => {
   });
 };
 
-
+// complain mail
 app.post('/sendemail', async (req, res) => {
+  try {
+    const { to, subject, text } = req.body;
+    const info = await sendEmail(to, subject, text);
+    return res.status(200).json({ msg: "Email sent successfully", info });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send('Failed to send email');
+  }
+});
+
+// segment delete 
+app.post('/sendemail2', async (req, res) => {
   try {
     const { to, subject, text } = req.body;
     const info = await sendEmail(to, subject, text);
