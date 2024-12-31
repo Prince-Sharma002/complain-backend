@@ -10,8 +10,11 @@ const app = express();
 
 const allowedOrigins = [
   'https://complain-frontend.vercel.app',
+  'https://geo-mesh-front.vercel.app/admin',
+  'https://geo-mesh-front-n4bmp0rr8-prince-sharma002s-projects.vercel.app/admin',
+  'https://geo-mesh-front.vercel.app/map',
   'https://geo-mesh-front.vercel.app/admin', // Add more origins here
-  'http://localhost:3000' // Localhost for testing
+  'http://localhost:3000', // Localhost for testing
 ];
 
 const corsOptions = {
