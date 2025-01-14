@@ -9,9 +9,10 @@ import bodyParser from 'body-parser';
 const app = express();
 
 const allowedOrigins = [
+  'http://127.0.0.1:5500',
+  'http://127.0.0.1:5500/frontend/admin.html',
   'https://geo-mesh-front.vercel.app/admin',
   'https://complain-frontend.vercel.app',
-  'http://127.0.0.1:5500/frontend/admin.html',
   'https://geo-mesh-front-n4bmp0rr8-prince-sharma002s-projects.vercel.app/admin',
   'https://geo-mesh-front.vercel.app/map',
   'https://geo-mesh-front.vercel.app/admin', // Add more origins here
