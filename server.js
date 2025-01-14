@@ -1,10 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors'
-import { MongooseConnect, gfs, gridfsBucket } from "./db/db.js";
+import { MongooseConnect } from './db/db.js';
 import { userComplain } from './model/complain-schema.js';
-import multer from "multer";
-import { GridFsStorage } from "multer-gridfs-storage";
 
 import bodyParser from 'body-parser';
 
@@ -12,8 +10,8 @@ const app = express();
 
 const allowedOrigins = [
   'https://geo-mesh-front.vercel.app/admin',
-  'http://127.0.0.1:5500/frontend/admin.html',
   'https://complain-frontend.vercel.app',
+  'http://127.0.0.1:5500/frontend/admin.html',
   'https://geo-mesh-front-n4bmp0rr8-prince-sharma002s-projects.vercel.app/admin',
   'https://geo-mesh-front.vercel.app/map',
   'https://geo-mesh-front.vercel.app/admin', // Add more origins here
@@ -155,14 +153,14 @@ app.delete( '/getdata/delete/:id' , async(req,res)=> {
 app.post('/updateprogress', async (req, res) => {
   try {
       const { _id, progress } = req.body;
-      
+
       // Use async/await with Mongoose
       const updatedComplain = await userComplain.findByIdAndUpdate(
           _id,
           { progress },
           { new: true }
       );
-      
+
       if (!updatedComplain) {
           return res.status(404).json({ message: 'Complaint not found' });
       }
@@ -171,52 +169,6 @@ app.post('/updateprogress', async (req, res) => {
   } catch (error) {
       console.error("Error updating progress:", error);
       res.status(500).json({ message: 'Internal server error' });
-  }
-});
-
-
-// images
-// Multer GridFS Storage Configuration
-const storage = new GridFsStorage({
-  url: process.env.MONGODB_URI,
-  options: { useNewUrlParser: true, useUnifiedTopology: true },
-  file: (req, file) => {
-      return {
-          bucketName: "uploads", // Collection name in GridFS
-          filename: `${Date.now()}-${file.originalname}`, // Customize filename
-      };
-  },
-});
-
-// Initialize `upload` middleware
-const upload = multer({ storage });
-
-// File Upload Route
-app.post("/upload", upload.single("image"), (req, res) => {
-  if (!req.file) {
-      return res.status(400).json({ error: "No file uploaded" });
-  }
-  res.status(200).json({ file: req.file });
-});
-
-// Fetch Image by ID
-app.get("/image/:id", async (req, res) => {
-  try {
-      const file = await gfs.files.findOne({ _id: mongoose.Types.ObjectId(req.params.id) });
-
-      if (!file) {
-          return res.status(404).json({ error: "File not found" });
-      }
-
-      // Check if the file is an image
-      if (file.contentType.startsWith("image/")) {
-          const readStream = gridfsBucket.openDownloadStream(file._id);
-          readStream.pipe(res);
-      } else {
-          res.status(400).json({ error: "File is not an image" });
-      }
-  } catch (err) {
-      res.status(500).json({ error: err.message });
   }
 });
 
