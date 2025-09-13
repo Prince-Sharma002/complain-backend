@@ -1,10 +1,42 @@
 import 'dotenv/config';
 import express from 'express';
-import cors from 'cors'
+import cors from 'cors';
+import multer from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import { MongooseConnect } from './db/db.js';
 import { userComplain } from './model/complain-schema.js';
-
 import bodyParser from 'body-parser';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ 
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    fileFilter: (req, file, cb) => {
+        const filetypes = /jpeg|jpg|png|gif/;
+        const mimetype = filetypes.test(file.mimetype);
+        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+        
+        if (mimetype && extname) {
+            return cb(null, true);
+        }
+        cb(new Error('Only image files are allowed (jpeg, jpg, png, gif)'));
+    }
+});
 
 const app = express();
 
@@ -44,7 +76,8 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 
 app.use(cors(corsOptions));
-app.use( express.json());
+app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
@@ -66,20 +99,37 @@ app.get('/getdata' , async (req,res)=>{
 
 } )
 
-app.post('/complain', async (req, res) => {
-  try{
-    console.log("data is  " , req.body)
-    const {name , desciption , address , image , phone , email , } = req.body;
-    await userComplain.create({name , desciption , address , image , phone , email , progress : 1 , pid : "qwertyuiop" });
-    return res.status(200).json({ msg : "data sent successfully" });
-  }
-  catch(err){
-    console.log(err)
+app.post('/complain', upload.single('image'), async (req, res) => {
+  try {
+    console.log("Request body:", req.body);
+    console.log("Uploaded file:", req.file);
+    
+    const { name, description, address, phone, email } = req.body;
+    const imagePath = req.file ? `/uploads/${req.file.filename}` : '';
+    
+    const newComplaint = await userComplain.create({
+      name,
+      description: description || '',
+      address: JSON.parse(address) || [],
+      image: imagePath,
+      phone,
+      email,
+      progress: 1,
+      pid: Date.now().toString(36) + Math.random().toString(36).substr(2)
+    });
+    
+    return res.status(200).json({ 
+      message: 'Complaint submitted successfully',
+      data: newComplaint 
+    });
+  } catch (err) {
+    console.error('Error in /complain:', err);
+    return res.status(500).json({ 
+      error: 'Error submitting complaint',
+      details: err.message 
+    });
   }
 });
-
-
-
 
 // email
 import nodemailer from 'nodemailer';
@@ -176,7 +226,7 @@ app.post('/updateprogress', async (req, res) => {
 
 
 MongooseConnect().then(()=>{
-  app.listen( '5000' , ()=>{
-    console.log( 'Server is running on port 5000' );
+  app.listen( '4000' , ()=>{
+    console.log( 'Server is running on port 4000' );
 } )
 } )
